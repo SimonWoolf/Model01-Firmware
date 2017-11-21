@@ -161,15 +161,15 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_LEDEffectNext,
    Key_Tab,  Key_Home,         Key_UpArrow, Key_End,        Key_KeypadPipe, Key_mouseWarpEnd, Key_mouseWarpNE,
    Key_Home, Key_LeftArrow,    Key_DownArrow, Key_RightArrow, Key_mouseBtnL, Key_mouseWarpNW,
-   Key_End,  Key_PrintScreen,  Key_Insert,  ___,        Key_mouseBtnM, Key_NonUsBackslashAndPipe,  Key_mouseWarpSE,
-   ___, Key_Delete, ___, ___,
+   Key_End,  Key_PrintScreen,  Key_Insert,  Key_Pause,        Key_mouseBtnM, Key_NonUsBackslashAndPipe,  Key_mouseWarpSE,
+   ___, Key_Escape, ___, ___,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    Key_DownArrow,          Key_RightArrow,           ___,                      ___,              ___,            Key_F12,
                                Key_LeftArrow,          Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket,              ___,
    Key_PcApplication,          Key_UpArrow,          Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-   ___, ___, Key_Enter, ___,
+   ___, ___, Key_Backspace, ___,
    ___)
 
 };
