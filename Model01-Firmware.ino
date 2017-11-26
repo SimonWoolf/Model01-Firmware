@@ -71,7 +71,8 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY
+       MACRO_ANY,
+       MACRO_ALTSYSRQ
      };
 
 
@@ -159,17 +160,17 @@ const Key keymaps[][ROWS][COLS] PROGMEM = {
 
   [FUNCTION] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_LEDEffectNext,
-   Key_Tab,  Key_Home,         Key_UpArrow, Key_End,        Key_KeypadPipe, Key_mouseWarpEnd, Key_mouseWarpNE,
+   Key_Tab,  Key_Home,         Key_UpArrow, Key_End,    M(MACRO_ALTSYSRQ),     ___, ___,
    Key_Home, Key_LeftArrow,    Key_DownArrow, Key_RightArrow, Key_mouseBtnL, Key_mouseWarpNW,
    Key_End,  Key_PrintScreen,  Key_Insert,  Key_Pause,        Key_mouseBtnM, Key_NonUsBackslashAndPipe,  Key_mouseWarpSE,
-   ___, Key_Escape, ___, ___,
+   ___, Key_Escape, ___, Key_LeftAlt,
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
    Consumer_PlaySlashPause,    Key_DownArrow,          Key_RightArrow,           ___,                      ___,              ___,            Key_F12,
                                Key_LeftArrow,          Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket,              ___,
    Key_PcApplication,          Key_UpArrow,          Consumer_VolumeDecrement, Consumer_VolumeIncrement, ___,             Key_Backslash,    Key_Pipe,
-   ___, ___, Key_Backspace, ___,
+   Key_RightAlt, ___, Key_Backspace, ___,
    ___)
 
 };
@@ -206,6 +207,29 @@ static void anyKeyMacro(uint8_t keyState) {
     kaleidoscope::hid::pressKey(lastKey);
 }
 
+/* The effect of this is to keep alt and printscreen pressed down for a 1s
+   duration.
+   Note that Key_Sysreq does not seem to be recognised by linux as a sysreq for
+   for the purposes of magic sysrq key combinations, need to use alt+printscreen
+   instead -- sysreq shows up as
+     state 0x18, keycode 248 (keysym 0x0, NoSymbol)
+   but alt+printscreen shows up as
+     state 0x18, keycode 107 (keysym 0xff15, Sys_Req)
+ */
+static void altSysrqMacro(uint8_t keyState) {
+  uint32_t timeout = 1000;
+  static uint32_t end_time = 0;
+
+  if (keyToggledOn(keyState)) {
+    end_time = millis() + timeout;
+  }
+
+  if (millis() < end_time) {
+    kaleidoscope::hid::pressKey(Key_LeftAlt);
+    kaleidoscope::hid::pressKey(Key_PrintScreen);
+  }
+}
+
 
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
@@ -229,7 +253,12 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
   case MACRO_ANY:
     anyKeyMacro(keyState);
     break;
+
+  case MACRO_ALTSYSRQ:
+    altSysrqMacro(keyState);
+    break;
   }
+
   return MACRO_NONE;
 }
 
