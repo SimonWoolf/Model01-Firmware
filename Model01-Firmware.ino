@@ -161,7 +161,7 @@ KEYMAPS(
    Key_Minus,     Key_J, Key_L, Key_U,     Key_Y,         Key_Semicolon, Key_Equals,
                   Key_H, Key_N, Key_E,     Key_I,         Key_O,         Key_Quote,
    Key_Enter,  Key_K, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
-   Key_RightAlt, Key_Spacebar, Key_Spacebar, Key_RightShift,
+   Key_RightAlt, Key_RightControl, Key_Spacebar, Key_RightShift,
    ShiftToLayer(FUNCTION)),
 
 
