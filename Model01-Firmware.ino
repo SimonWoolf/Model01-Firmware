@@ -193,7 +193,7 @@ KEYMAPS(
    ___,
 
    Consumer_ScanPreviousTrack, Key_F6,                 Key_F7,                   Key_F8,                   Key_F9,          Key_F10,          Key_F11,
-   Consumer_PlaySlashPause,    Key_DownArrow,          Key_RightArrow,           ___,                      ___,              ___,            Key_F12,
+   Consumer_PlaySlashPause,    Key_DownArrow,          Key_RightArrow,           Key_E,                      Key_RightCurlyBracket,              ___,            Key_F12,
                                Key_LeftArrow,          Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket,              ___,
    Key_PcApplication,          Key_UpArrow,            Key_KeypadLeftParen, Key_KeypadRightParen, ___,             Key_Backslash,    Key_Pipe,
    Key_RightAlt, ___, Key_Backspace, ___,
