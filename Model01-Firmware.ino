@@ -89,8 +89,7 @@
   */
 
 enum { MACRO_VERSION_INFO,
-       MACRO_ANY,
-       MACRO_ALTSYSRQ
+       MACRO_ANY
      };
 
 
@@ -143,7 +142,7 @@ enum { MACRO_VERSION_INFO,
   *
   */
 
-enum { COLEMAK, NUMPAD, FUNCTION }; // layers
+enum { COLEMAK, NUMPAD, FUNCTION, SYSRQ }; // layers
 
 /* This comment temporarily turns off astyle's indent enforcement
  *   so we can make the keymaps actually resemble the physical key layout better
@@ -186,7 +185,7 @@ KEYMAPS(
 
   [FUNCTION] =  KEYMAP_STACKED
   (___,      Key_F1,           Key_F2,      Key_F3,     Key_F4,        Key_F5,           Key_LEDEffectNext,
-   Key_Tab,  Key_Home,         Key_UpArrow, Key_End,    M(MACRO_ALTSYSRQ),     ___, ___,
+   Key_Tab,  Key_Home,         Key_UpArrow, Key_End,    LockLayer(SYSRQ),     ___, ___,
    Key_Home, Key_LeftArrow,    Key_DownArrow, Key_RightArrow, ___, ___,
    Key_End,  Key_PrintScreen,  Key_Insert,  Key_Pause,        Consumer_VolumeDecrement, Consumer_VolumeIncrement,  ___,
    ___, Key_Escape, ___, Key_LeftAlt,
@@ -197,7 +196,23 @@ KEYMAPS(
                                Key_LeftArrow,          Key_LeftCurlyBracket,     Key_RightCurlyBracket,    Key_LeftBracket, Key_RightBracket,              ___,
    Key_PcApplication,          Key_UpArrow,            Key_KeypadLeftParen, Key_KeypadRightParen, ___,             Key_Backslash,    Key_Pipe,
    Key_RightAlt, ___, Key_Backspace, ___,
-   ___)
+   ___),
+
+  /* The same as the normal layer except the right alt is a printscreen. Handy for alt-sysrq shenenigans. Tap the fn key to return back to the default. */
+  [SYSRQ] =  KEYMAP_STACKED
+  (Key_LeftGui,  Key_1, Key_2, Key_3, Key_4, Key_5, Key_NonUsBackslashAndPipe,
+   Key_Backtick, Key_Q, Key_W, Key_F, Key_P, Key_G, Key_Tab,
+   Key_PageUp,   Key_A, Key_R, Key_S, Key_T, Key_D,
+   Key_PageDown, Key_Z, Key_X, Key_C, Key_V, Key_B, Key_Backspace,
+   Key_LeftShift, Key_Escape, Key_LeftControl, Key_LeftAlt,
+   UnlockLayer(SYSRQ),
+
+   Key_Backslash,  Key_6, Key_7, Key_8,     Key_9,         Key_0,         Key_Delete,
+   Key_Minus,     Key_J, Key_L, Key_U,     Key_Y,         Key_Semicolon, Key_Equals,
+                  Key_H, Key_N, Key_E,     Key_I,         Key_O,         Key_Quote,
+   Key_Enter,  Key_K, Key_M, Key_Comma, Key_Period,    Key_Slash,     Key_Minus,
+   Key_PrintScreen, Key_RightControl, Key_Spacebar, Key_RightShift,
+   UnlockLayer(SYSRQ))
 ) // KEYMAPS(
 
 /* Re-enable astyle's indent enforcement */
@@ -235,30 +250,6 @@ static void anyKeyMacro(uint8_t keyState) {
     kaleidoscope::hid::pressKey(lastKey, toggledOn);
 }
 
-/* The effect of this is to keep alt and printscreen pressed down for a 1s
-   duration.
-   Note that Key_Sysreq does not seem to be recognised by linux as a sysreq for
-   for the purposes of magic sysrq key combinations, need to use alt+printscreen
-   instead -- sysreq shows up as
-     state 0x18, keycode 248 (keysym 0x0, NoSymbol)
-   but alt+printscreen shows up as
-     state 0x18, keycode 107 (keysym 0xff15, Sys_Req)
- */
-static void altSysrqMacro(uint8_t keyState) {
-  uint32_t timeout = 1000;
-  static uint32_t end_time = 0;
-
-  if (keyToggledOn(keyState)) {
-    end_time = millis() + timeout;
-  }
-
-  if (millis() < end_time) {
-    kaleidoscope::hid::pressKey(Key_LeftAlt);
-    kaleidoscope::hid::pressKey(Key_PrintScreen);
-  }
-}
-
-
 /** macroAction dispatches keymap events that are tied to a macro
     to that macro. It takes two uint8_t parameters.
 
@@ -280,10 +271,6 @@ const macro_t *macroAction(uint8_t macroIndex, uint8_t keyState) {
 
   case MACRO_ANY:
     anyKeyMacro(keyState);
-    break;
-
-  case MACRO_ALTSYSRQ:
-    altSysrqMacro(keyState);
     break;
   }
 
